@@ -1,0 +1,19 @@
+{
+  "name": "chroflix-backend",
+  "version": "1.0.0",
+  "description": "choflix api for mobile app",
+  "main": "app.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/moustaphadiakhate/chroflix-backend.git"
+  },
+  "author": "moustapha diakhate",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/moustaphadiakhate/chroflix-backend/issues"
+  },
+  "homepage": "https://github.com/moustaphadiakhate/chroflix-backend#readme"
+}
