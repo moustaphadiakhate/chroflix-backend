@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/moustaphadiakhate/chroflix-backend/issues"
   },
-  "homepage": "https://github.com/moustaphadiakhate/chroflix-backend#readme"
+  "homepage": "https://github.com/moustaphadiakhate/chroflix-backend#readme",
+  "dependencies": {
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.14.1",
+    "sequelize-auto": "^0.8.8"
+  }
 }
