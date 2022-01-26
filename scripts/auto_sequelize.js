@@ -1,8 +1,9 @@
-fs = require('fs');
+const fs = require('fs');
 const SequelizeAuto = require('sequelize-auto');
+
 const auto = new SequelizeAuto('c1353623c_chroflix', 'root', 'pass', {
   host: 'localhost',
-  dialect: 'mysql'
+  dialect: 'mysql',
 });
 
 // auto.run().then(data => {
@@ -15,4 +16,4 @@ const auto = new SequelizeAuto('c1353623c_chroflix', 'root', 'pass', {
 
 // });
 
-console.log('DB Name is : c1353623c_chroflix');
+console.log('DB Name is : c1353623c_chroflix')
