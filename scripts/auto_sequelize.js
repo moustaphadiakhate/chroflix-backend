@@ -13,7 +13,6 @@ const auto = new SequelizeAuto('c1353623c_chroflix', 'root', 'pass', {
 //   console.log(data.hasTriggerTables); // tables that have triggers
 //   console.log(data.relations);   // relationships between models
 //   console.log(data.text)         // text of generated models
-
 // });
 
-console.log('DB Name is : c1353623c_chroflix')
+console.log('DB Name is : c1353623c_chroflix');
