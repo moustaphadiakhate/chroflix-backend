@@ -31,8 +31,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // });
 
 // simple route
-app.get('/', (req, res) => {
-  res.json({ message: 'Hi there, welcome chroflix.' });
+app.get('/health', (req, res) => {
+  res.json({ status: 200, result: 'Chroflix api server.. nothing to see here' });
 });
 
 // api routes
