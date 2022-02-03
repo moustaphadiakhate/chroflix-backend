@@ -1,3 +1,5 @@
+/* eslint-disable node/no-unsupported-features/es-syntax */
+/* eslint-disable import/no-unresolved */
 /* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-use-before-define */
@@ -27,17 +29,38 @@ exports.signup = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        User.create({
-          nom: req_body.nom,
-          pseudo: req_body.pseudo,
-          prenom: req_body.prenom,
-          email: req_body.email,
-          password: bcrypt.hashSync(req_body.password, 8),
-          profil: `user_${shortid.generate()}`,
+        User.findOne({
+          where: {
+            email: req_body.email,
+          },
         })
           .then((user) => {
-            user.access_token = get_token({ id: user.id });
-            http.send(req, res, SUCCESS, user);
+            if (user) {
+              http.send(req, res, ERROR, { message: 'email already used' });
+            } else {
+              User.create({
+                nom: req_body.nom,
+                pseudo: req_body.pseudo,
+                prenom: req_body.prenom,
+                email: req_body.email,
+                password: bcrypt.hashSync(req_body.password, 8),
+                profil: `user_${shortid.generate()}`,
+              })
+                .then(async (new_user) => {
+                  const data = {
+                    nom: new_user.nom,
+                    pseudo: new_user.pseudo,
+                    prenom: new_user.prenom,
+                    email: new_user.email,
+                    access_token: await get_token({ id: new_user.id }),
+                  };
+                  http.send(req, res, SUCCESS, data);
+                })
+                .catch((err) => {
+                  console.log(err);
+                  http.send(req, res, ERROR, err);
+                });
+            }
           })
           .catch((err) => {
             console.log(err);
@@ -56,6 +79,7 @@ exports.signup = (req, res) => {
 exports.signin = (req, res) => {
   const req_body = {
     pseudo: req.body.pseudo,
+    password: req.body.password,
   };
 
   validate
@@ -67,7 +91,7 @@ exports.signin = (req, res) => {
             pseudo: req_body.pseudo,
           },
         })
-          .then((user) => {
+          .then(async (user) => {
             if (!user) {
               http.send(req, res, ERROR, { message: 'User Not found.' });
             }
@@ -75,13 +99,10 @@ exports.signin = (req, res) => {
             const passwordIsValid = bcrypt.compareSync(req_body.password, user.password);
 
             if (!passwordIsValid) {
-              return res.status(401).send({
-                accessToken: null,
-                message: 'Invalid Password!',
-              });
+              http.send(req, res, ERROR, { message: 'Invalid Password!' });
             }
 
-            const token = get_token({ id: user.id });
+            const token = await get_token({ id: user.id });
             http.send(req, res, SUCCESS, {
               id: user.id,
               pseudo: user.pseudo,
