@@ -41,16 +41,16 @@ const send = (req, res, status, response) => {
         send_response(res, 401, response, 'Not Authorized');
         break;
       case 'objEmpty':
-        send_response(res, 400, [], 'ObjEmpty');
+        send_response(res, 400, response, 'ObjEmpty');
         break;
       case 'badRequest':
         send_response(res, 400, response, 'Bad REQUEST');
         break;
       case 'validationErr':
-        send_response(res, 422, [], 'ValidationError');
+        send_response(res, 422, response, 'ValidationError');
         break;
       case 'verificationErr':
-        send_response(res, 304, [], 'VarificationError');
+        send_response(res, 304, response, 'VarificationError');
         break;
       case 'forbidden':
         send_response(res, 409, response, 'FORBIDDEN');
@@ -62,7 +62,7 @@ const send = (req, res, status, response) => {
         send_response(res, 200, response, 'LogOut');
         break;
       default:
-        send_response(res, 500, [], 'InternalServerError');
+        send_response(res, 500, response, 'InternalServerError');
     }
   }
 };

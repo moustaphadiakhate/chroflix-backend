@@ -23,6 +23,8 @@ const validate_mobile = (phone) => {
   return re.test(number);
 };
 
+const validate_pseudo = (value) => !!(value && value.length >= 6);
+
 const validate_password = (value) => !!(value && value.length >= 8);
 
 const validate_cvc = (value) => !!(value && value.length <= 3);
@@ -45,6 +47,13 @@ const validation = (parameters, obj) =>
       existedFields.emptyKeys.length <= 0 &&
         existedFields.keys.forEach((element) => {
           switch (element) {
+            case 'pseudo':
+              !validate_pseudo(obj.pseudo) &&
+                existedFields.emptyKeys.push({
+                  fieldName: element,
+                  message: 'pseudo is not valid.',
+                });
+              break;
             case 'email':
               !validate_email(obj.email) &&
                 existedFields.emptyKeys.push({
