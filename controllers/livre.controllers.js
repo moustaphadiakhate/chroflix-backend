@@ -1,9 +1,20 @@
 /* eslint-disable node/no-unsupported-features/es-syntax */
 /* eslint-disable camelcase */
+const multer = require('multer');
+const shortid = require('shortid');
 const db = require('../models');
 const http = require('../common/http');
 const validate = require('../common/common');
 const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../common/constant');
+
+const storage = multer.diskStorage({
+  destination: './uploads/input',
+  filename(req, file, cb) {
+    cb(null, `${Date.now()}-${shortid.generate()}`);
+  },
+});
+
+const upload = multer({ storage });
 
 const Livres = db.livres;
 

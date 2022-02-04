@@ -47,7 +47,38 @@ exports.get_bibliotheque = (req, res) => {
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
 };
-//
+
+// self a Bibliotheque
+
+exports.get_my_bibliotheque = (req, res) => {
+  const req_body = {
+    user_id: req.query.user_id,
+  };
+  validate
+    .validation(Object.keys(req_body), req_body)
+    .then(async ({ status, response }) => {
+      if (status) {
+        Bibliotheques.findOne({
+          where: {
+            user_id: req_body.user_id,
+          },
+        })
+          .then((bibliotheque) => {
+            http.send(req, res, SUCCESS, bibliotheque);
+          })
+          .catch((err) => {
+            console.log(err);
+            http.send(req, res, ERROR, err);
+          });
+      } else {
+        http.send(req, res, VALIDATE_ERROR, response);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      http.send(req, res, INTERNAL_SERVER_ERROR, err);
+    });
+};
 
 // Create and Save a new Bibliotheque
 exports.create_bibliotheque = (req, res) => {

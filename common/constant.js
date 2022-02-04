@@ -22,6 +22,7 @@ module.exports = {
   SOCIAL_LOGIN_USER: 'social_login_user',
 
   FORBIDDEN: 'forbidden',
+  NOT_ALLOW_ACCESS: 'not_allowed_acces',
   BAD_REQUEST: 'badRequest',
   NOT_CHANGED: 'notChanged',
   NO_CHANGE: 'noChange',

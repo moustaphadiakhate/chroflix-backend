@@ -127,7 +127,7 @@ exports.signin = (req, res) => {
 
 const get_token = async (obj) => {
   const token = await jwt.sign(obj, config.auth.secret, {
-    expiresIn: 86400, // 24 hours
+    expiresIn: '1y', // 1 year
   });
   return token;
 };

@@ -46,7 +46,3 @@ exports.get_user = (req, res) => {
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
 };
-
-// can accsess brouillons
-// can accsess books
-// can accsess chapitre

@@ -36,7 +36,36 @@ exports.get_notification = (req, res) => {
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
 };
-//
+
+exports.get_my_notifications = (req, res) => {
+  const req_body = {
+    user_id: req.query.user_id,
+  };
+  validate
+    .validation(Object.keys(req_body), req_body)
+    .then(async ({ status, response }) => {
+      if (status) {
+        Notifications.findAll({
+          where: {
+            user_id: req_body.user_id,
+          },
+        })
+          .then((notifications) => {
+            http.send(req, res, SUCCESS, notifications);
+          })
+          .catch((err) => {
+            console.log(err);
+            http.send(req, res, ERROR, err);
+          });
+      } else {
+        http.send(req, res, VALIDATE_ERROR, response);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      http.send(req, res, INTERNAL_SERVER_ERROR, err);
+    });
+};
 
 // Create and Save a new Notification
 exports.create_notification = (req, res) => {
