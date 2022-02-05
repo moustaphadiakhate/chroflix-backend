@@ -21,6 +21,7 @@ exports.get_chapitres = (req, res) => {
 exports.get_chapitre = (req, res) => {
   const req_body = {
     id: req.query.id,
+    livre_id: req.query.livre_id,
   };
   validate
     .validation(Object.keys(req_body), req_body)
@@ -85,6 +86,7 @@ exports.create_chapitre = (req, res) => {
 exports.findById = (req, res) => {
   const req_body = {
     id: req.query.id,
+    livre_id: req.query.livre_id,
   };
   validate
     .validation(Object.keys(req_body), req_body)
@@ -112,6 +114,7 @@ exports.findById = (req, res) => {
 exports.update_chapitre = (req, res) => {
   const req_body = {
     id: req.body.id,
+    livre_id: req.body.livre_id,
     ...req.body,
   };
   validate
@@ -151,6 +154,7 @@ exports.update_chapitre = (req, res) => {
 exports.delete_chapitre = (req, res) => {
   const req_body = {
     id: req.query.id,
+    livre_id: req.query.livre_id,
   };
 
   validate

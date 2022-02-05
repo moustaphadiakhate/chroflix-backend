@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
       if (err) {
         http.send(req, res, TOKEN_ERROR, { message: 'Unauthorized access.' });
       }
-      req.decoded = decoded;
+      req.chroflix_user = decoded;
       next();
     });
   } else {

@@ -58,7 +58,40 @@ exports.get_livre = (req, res) => {
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
 };
-//
+
+// getmy books
+
+exports.get_my_livres = (req, res) => {
+  // or livre_is as id
+  const req_body = {
+    auteur_id: req.query.auteur_id,
+  };
+  validate
+    .validation(Object.keys(req_body), req_body)
+    .then(async ({ status, response }) => {
+      if (status) {
+        Livres.find({
+          where: {
+            auteur_id: req_body.auteur_id,
+          },
+        })
+          .then((livres) => {
+            // find all chapiter titles
+            http.send(req, res, SUCCESS, livres);
+          })
+          .catch((err) => {
+            console.log(err);
+            http.send(req, res, ERROR, err);
+          });
+      } else {
+        http.send(req, res, VALIDATE_ERROR, response);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      http.send(req, res, INTERNAL_SERVER_ERROR, err);
+    });
+};
 
 // Create and Save a new Book
 exports.create_livre = (req, res) => {

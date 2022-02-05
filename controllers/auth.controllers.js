@@ -47,14 +47,18 @@ exports.signup = (req, res) => {
                 profil: `user_${shortid.generate()}`,
               })
                 .then(async (new_user) => {
-                  const data = {
+                  const response_data = {
                     nom: new_user.nom,
                     pseudo: new_user.pseudo,
                     prenom: new_user.prenom,
                     email: new_user.email,
-                    access_token: await get_token({ id: new_user.id }),
+                    access_token: await get_token({
+                      user_id: new_user.id,
+                      pseudo: new_user.pseudo,
+                      email: new_user.email,
+                    }),
                   };
-                  http.send(req, res, SUCCESS, data);
+                  http.send(req, res, SUCCESS, response_data);
                 })
                 .catch((err) => {
                   console.log(err);
@@ -101,14 +105,17 @@ exports.signin = (req, res) => {
             if (!passwordIsValid) {
               http.send(req, res, ERROR, { message: 'Invalid Password!' });
             }
-
-            const token = await get_token({ id: user.id });
-            http.send(req, res, SUCCESS, {
+            const response_data = {
               id: user.id,
               pseudo: user.pseudo,
               email: user.email,
-              accessToken: token,
-            });
+              accessToken: await get_token({
+                user_id: user.id,
+                pseudo: user.pseudo,
+                email: user.email,
+              }),
+            };
+            http.send(req, res, SUCCESS, response_data);
           })
           .catch((err) => {
             http.send(req, res, ERROR, err);

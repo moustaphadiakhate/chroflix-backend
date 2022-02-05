@@ -58,12 +58,11 @@ exports.get_my_bibliotheque = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Bibliotheques.findOne({
-          where: {
-            user_id: req_body.user_id,
-          },
+        Bibliotheques.find({
+          where: { user_id: req_body.user_id },
         })
           .then((bibliotheque) => {
+            // find all books titles
             http.send(req, res, SUCCESS, bibliotheque);
           })
           .catch((err) => {
