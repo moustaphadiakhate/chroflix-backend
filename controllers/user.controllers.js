@@ -25,11 +25,7 @@ exports.get_user = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        User.findOne({
-          where: {
-            pseudo: req_body.pseudo,
-          },
-        })
+        User.findOne({ where: { pseudo: req_body.pseudo } })
           .then((user) => {
             http.send(req, res, SUCCESS, user);
           })

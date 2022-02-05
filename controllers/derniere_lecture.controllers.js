@@ -26,11 +26,7 @@ exports.get_dernierelecture = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Dernierelectures.findOne({
-          where: {
-            id: req_body.user_id,
-          },
-        })
+        Dernierelectures.findOne({ where: { id: req_body.user_id } })
           .then((dernierelecture) => {
             http.send(req, res, SUCCESS, dernierelecture);
           })
@@ -116,9 +112,7 @@ exports.update_dernierelecture = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Dernierelectures.update(req_body, {
-          where: { user_id: req_body.user_id },
-        })
+        Dernierelectures.update(req_body, { where: { user_id: req_body.user_id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {
@@ -155,9 +149,7 @@ exports.delete_dernierelecture = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Dernierelectures.destroy({
-          where: { user_id: req_body.user_id },
-        })
+        Dernierelectures.destroy({ where: { user_id: req_body.user_id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {

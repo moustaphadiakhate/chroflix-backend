@@ -26,11 +26,7 @@ exports.get_auteur = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Auteurs.findOne({
-          where: {
-            id: req_body.id,
-          },
-        })
+        Auteurs.findOne({ where: { id: req_body.id } })
           .then((auteur) => {
             http.send(req, res, SUCCESS, auteur);
           })
@@ -119,9 +115,7 @@ exports.update_auteur = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Auteurs.update(req_body, {
-          where: { id: req_body.id },
-        })
+        Auteurs.update(req_body, { where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {
@@ -158,9 +152,7 @@ exports.delete_auteur = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Auteurs.destroy({
-          where: { id: req_body.id },
-        })
+        Auteurs.destroy({ where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {

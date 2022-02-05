@@ -27,11 +27,7 @@ exports.get_chapitre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Chapitre.findOne({
-          where: {
-            id: req_body.id,
-          },
-        })
+        Chapitre.findOne({ where: { id: req_body.id } })
           .then((chapitre) => {
             http.send(req, res, SUCCESS, chapitre);
           })
@@ -121,9 +117,7 @@ exports.update_chapitre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Chapitre.update(req_body, {
-          where: { id: req_body.id },
-        })
+        Chapitre.update(req_body, { where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {
@@ -161,9 +155,7 @@ exports.delete_chapitre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Chapitre.destroy({
-          where: { id: req_body.id },
-        })
+        Chapitre.destroy({ where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {

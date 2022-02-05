@@ -27,11 +27,7 @@ exports.get_brouillon = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Brouillons.findOne({
-          where: {
-            id: req_body.id,
-          },
-        })
+        Brouillons.findOne({ where: { id: req_body.id } })
           .then((brouillon) => {
             http.send(req, res, SUCCESS, brouillon);
           })
@@ -122,9 +118,7 @@ exports.update_brouillon = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Brouillons.update(req_body, {
-          where: { id: req_body.id },
-        })
+        Brouillons.update(req_body, { where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {
@@ -162,9 +156,7 @@ exports.delete_brouillon = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Brouillons.destroy({
-          where: { id: req_body.id },
-        })
+        Brouillons.destroy({ where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {

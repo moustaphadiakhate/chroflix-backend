@@ -15,11 +15,7 @@ exports.get_notification = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Notifications.findOne({
-          where: {
-            id: req_body.id,
-          },
-        })
+        Notifications.findOne({ where: { id: req_body.id } })
           .then((notification) => {
             http.send(req, res, SUCCESS, notification);
           })
@@ -45,11 +41,7 @@ exports.get_my_notifications = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Notifications.findAll({
-          where: {
-            user_id: req_body.user_id,
-          },
-        })
+        Notifications.findAll({ where: { user_id: req_body.user_id } })
           .then((notifications) => {
             http.send(req, res, SUCCESS, notifications);
           })
@@ -107,9 +99,7 @@ exports.update_notification = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Notifications.update(req_body, {
-          where: { id: req_body.id },
-        })
+        Notifications.update(req_body, { where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {

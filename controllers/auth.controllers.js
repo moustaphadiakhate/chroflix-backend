@@ -29,11 +29,7 @@ exports.signup = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        User.findOne({
-          where: {
-            email: req_body.email,
-          },
-        })
+        User.findOne({ where: { email: req_body.email } })
           .then((user) => {
             if (user) {
               http.send(req, res, ERROR, { message: 'email already used' });
@@ -90,11 +86,7 @@ exports.signin = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        User.findOne({
-          where: {
-            pseudo: req_body.pseudo,
-          },
-        })
+        User.findOne({ where: { pseudo: req_body.pseudo } })
           .then(async (user) => {
             if (!user) {
               http.send(req, res, ERROR, { message: 'User Not found.' });

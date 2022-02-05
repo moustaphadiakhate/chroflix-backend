@@ -37,12 +37,9 @@ exports.get_livre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Livres.findOne({
-          where: {
-            id: req_body.id,
-          },
-        })
+        Livres.findOne({ where: { id: req_body.id } })
           .then((livre) => {
+            // find all chapiter titles
             http.send(req, res, SUCCESS, livre);
           })
           .catch((err) => {
@@ -70,13 +67,8 @@ exports.get_my_livres = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Livres.find({
-          where: {
-            auteur_id: req_body.auteur_id,
-          },
-        })
+        Livres.find({ where: { auteur_id: req_body.auteur_id } })
           .then((livres) => {
-            // find all chapiter titles
             http.send(req, res, SUCCESS, livres);
           })
           .catch((err) => {
@@ -167,9 +159,7 @@ exports.update_livre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Livres.update(req_body, {
-          where: { id: req_body.id },
-        })
+        Livres.update(req_body, { where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {
@@ -204,9 +194,7 @@ exports.delete_livre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Livres.destroy({
-          where: { id: req_body.id },
-        })
+        Livres.destroy({ where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {

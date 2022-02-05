@@ -26,11 +26,7 @@ exports.get_genre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Genres.findOne({
-          where: {
-            id: req_body.id,
-          },
-        })
+        Genres.findOne({ where: { id: req_body.id } })
           .then((genre) => {
             http.send(req, res, SUCCESS, genre);
           })

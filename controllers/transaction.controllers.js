@@ -15,11 +15,7 @@ exports.get_transaction = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Transactions.findOne({
-          where: {
-            id: req_body.id,
-          },
-        })
+        Transactions.findOne({ where: { id: req_body.id } })
           .then((transaction) => {
             http.send(req, res, SUCCESS, transaction);
           })
@@ -83,9 +79,7 @@ exports.update_transaction = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Transactions.update(req_body, {
-          where: { id: req_body.id },
-        })
+        Transactions.update(req_body, { where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {

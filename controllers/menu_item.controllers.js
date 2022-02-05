@@ -26,11 +26,7 @@ exports.get_menu_item = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Menu_items.findOne({
-          where: {
-            id: req_body.id,
-          },
-        })
+        Menu_items.findOne({ where: { id: req_body.id } })
           .then((menu_item) => {
             http.send(req, res, SUCCESS, menu_item);
           })

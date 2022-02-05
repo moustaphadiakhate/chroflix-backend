@@ -26,11 +26,7 @@ exports.get_bibliotheque = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Bibliotheques.findOne({
-          where: {
-            id: req_body.id,
-          },
-        })
+        Bibliotheques.findOne({ where: { id: req_body.id } })
           .then((bibliotheque) => {
             http.send(req, res, SUCCESS, bibliotheque);
           })
@@ -58,9 +54,7 @@ exports.get_my_bibliotheque = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Bibliotheques.find({
-          where: { user_id: req_body.user_id },
-        })
+        Bibliotheques.find({ where: { user_id: req_body.user_id } })
           .then((bibliotheque) => {
             // find all books titles
             http.send(req, res, SUCCESS, bibliotheque);
@@ -147,9 +141,7 @@ exports.update_bibliotheque = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Bibliotheques.update(req_body, {
-          where: { id: req_body.id },
-        })
+        Bibliotheques.update(req_body, { where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {
@@ -186,9 +178,7 @@ exports.delete_bibliotheque = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Bibliotheques.destroy({
-          where: { id: req_body.id },
-        })
+        Bibliotheques.destroy({ where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {
