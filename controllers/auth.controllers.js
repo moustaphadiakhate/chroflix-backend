@@ -39,7 +39,7 @@ exports.signup = (req, res) => {
                 pseudo: req_body.pseudo,
                 prenom: req_body.prenom,
                 email: req_body.email,
-                password: bcrypt.hashSync(req_body.password, 8),
+                password: bcrypt.hashSync(req_body.password, 10),
                 profil: `user_${shortid.generate()}`,
               })
                 .then(async (new_user) => {

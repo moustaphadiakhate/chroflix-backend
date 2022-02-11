@@ -13,6 +13,7 @@ const notification_controller = require('../controllers/notification.controllers
 
 router.get('/all', user_controller.get_users);
 router.get('/user', user_controller.get_user);
+
 router.get('/my_bibliotheque', bibliotheque_controller.get_my_bibliotheque); // should contains all books titles
 router.get('/my_notifications', notification_controller.get_my_notifications);
 router.get('/my_livres', livre_controller.get_my_livres);
@@ -25,50 +26,50 @@ router.delete('/livre', livre_controller.delete_livre);
 router.get(
   '/chapitre',
   verify_token,
-  verify_access.can_get_delete_chapiter_or_brouillon,
+  verify_access.can_get_chapiter_or_brouillon,
   chapitre_controller.get_chapitre
 );
 router.post(
   '/chapitre',
   verify_token,
-  verify_access.can_post_update_chapiter_or_brouillon,
+  verify_access.can_set_chapiter_or_brouillon,
   chapitre_controller.create_chapitre
 );
 router.patch(
   '/chapitre',
   verify_token,
-  verify_access.can_post_update_chapiter_or_brouillon,
+  verify_access.can_set_chapiter_or_brouillon,
   chapitre_controller.update_chapitre
 );
 router.delete(
   '/chapitre',
   verify_token,
-  verify_access.can_get_delete_chapiter_or_brouillon,
+  verify_access.can_set_chapiter_or_brouillon,
   chapitre_controller.delete_chapitre
 );
 
 router.get(
   '/brouillon',
   verify_token,
-  verify_access.can_get_delete_chapiter_or_brouillon,
+  verify_access.can_get_chapiter_or_brouillon,
   brouillon_controller.get_brouillon
 );
 router.post(
   '/brouillon',
   verify_token,
-  verify_access.can_post_update_chapiter_or_brouillon,
+  verify_access.can_set_chapiter_or_brouillon,
   brouillon_controller.create_brouillon
 );
 router.patch(
   '/brouillon',
   verify_token,
-  verify_access.can_post_update_chapiter_or_brouillon,
+  verify_access.can_set_chapiter_or_brouillon,
   brouillon_controller.update_brouillon
 );
 router.delete(
   '/brouillon',
   verify_token,
-  verify_access.can_get_delete_chapiter_or_brouillon,
+  verify_access.can_set_chapiter_or_brouillon,
   brouillon_controller.delete_brouillon
 );
 

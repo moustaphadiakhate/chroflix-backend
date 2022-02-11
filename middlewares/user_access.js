@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const http = require('../common/http');
 const { NOT_ALLOW_ACCESS, ERROR } = require('../common/constant');
 const db = require('../models');
@@ -10,7 +11,7 @@ exports.can_access_book = (req, res, next) => {
   next();
 };
 
-exports.can_get_delete_chapiter_or_brouillon = (req, res, next) => {
+exports.can_get_chapiter_or_brouillon = (req, res, next) => {
   Livres.findOne({ where: { id: req.query.livre_id } })
     .then((livre) => {
       if (livre.prix !== '0') {
@@ -40,8 +41,9 @@ exports.can_get_delete_chapiter_or_brouillon = (req, res, next) => {
     });
 };
 
-exports.can_post_update_chapiter_or_brouillon = (req, res, next) => {
-  Livres.findOne({ where: { d: req.body.livre_id } })
+exports.can_set_chapiter_or_brouillon = (req, res, next) => {
+  const livre_id = req.body.livre_id || req.query.livre_id;
+  Livres.findOne({ where: { id: livre_id } })
     .then((livre) => {
       if (livre) {
         Auteurs.findOne({ where: { user_id: req.chroflix_user.user_id } })

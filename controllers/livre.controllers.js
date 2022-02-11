@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable node/no-unsupported-features/es-syntax */
 /* eslint-disable camelcase */
 const multer = require('multer');
@@ -17,11 +18,23 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 const Livres = db.livres;
+const Chapitres = db.chapitres;
 
 exports.get_livres = (req, res) => {
   Livres.findAll()
     .then((livres) => {
-      http.send(req, res, SUCCESS, livres);
+      const response_livres = livres.map(async (livre) => {
+        const chapitres = await chapitre_finders(livre.id);
+        return {
+          id: livre.id,
+          genre_id: livre.genre_id,
+          prix: livre.prix,
+          thumbnail: livre.thumbnail,
+          description: livre.description,
+          chapitres: chapitres || [],
+        };
+      });
+      http.send(req, res, SUCCESS, response_livres);
     })
     .catch((err) => {
       console.log(err);
@@ -38,9 +51,18 @@ exports.get_livre = (req, res) => {
     .then(async ({ status, response }) => {
       if (status) {
         Livres.findOne({ where: { id: req_body.id } })
-          .then((livre) => {
+          .then(async (livre) => {
             // find all chapiter titles
-            http.send(req, res, SUCCESS, livre);
+            const chapitres = await chapitre_finders(livre.id);
+            const response_livre = {
+              id: livre.id,
+              genre_id: livre.genre_id,
+              prix: livre.prix,
+              thumbnail: livre.thumbnail,
+              description: livre.description,
+              chapitres: chapitres || [],
+            };
+            http.send(req, res, SUCCESS, response_livre);
           })
           .catch((err) => {
             console.log(err);
@@ -218,3 +240,15 @@ exports.delete_livre = (req, res) => {
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
 };
+
+// private functions
+const chapitre_finders = (livre_id) =>
+  new Promise((resolve, reject) => {
+    Chapitres.findAll({ where: { livre_id } })
+      .then((chapitres) => {
+        resolve(chapitres);
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
