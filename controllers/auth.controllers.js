@@ -89,13 +89,13 @@ exports.signin = (req, res) => {
         User.findOne({ where: { pseudo: req_body.pseudo } })
           .then(async (user) => {
             if (!user) {
-              http.send(req, res, ERROR, { message: 'User Not found.' });
+              return http.send(req, res, ERROR, { message: 'User Not found.' });
             }
 
             const passwordIsValid = bcrypt.compareSync(req_body.password, user.password);
 
             if (!passwordIsValid) {
-              http.send(req, res, ERROR, { message: 'Invalid Password!' });
+              return http.send(req, res, ERROR, { message: 'Invalid Password!' });
             }
             const response_data = {
               id: user.id,
