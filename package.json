@@ -4,6 +4,7 @@
   "description": "choflix api for mobile app",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "test",
     "lint": "eslint --fix main.js",
     "format": "prettier -w ."
