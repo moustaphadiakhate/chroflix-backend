@@ -5,10 +5,10 @@ const http = require('../common/http');
 const validate = require('../common/common');
 const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../common/constant');
 
-const Chapitre = db.chapitre;
+const Chapitres = db.chapitres;
 
 exports.get_chapitres = (req, res) => {
-  Chapitre.findAll()
+  Chapitres.findAll()
     .then((chapitre) => {
       http.send(req, res, SUCCESS, chapitre);
     })
@@ -27,7 +27,7 @@ exports.get_chapitre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Chapitre.findOne({ where: { id: req_body.id } })
+        Chapitres.findOne({ where: { id: req_body.id } })
           .then((chapitre) => {
             http.send(req, res, SUCCESS, chapitre);
           })
@@ -46,7 +46,7 @@ exports.get_chapitre = (req, res) => {
 };
 //
 
-// Create and Save a new Chapitre
+// Create and Save a new Chapitres
 exports.create_chapitre = (req, res) => {
   const req_body = {
     livre_id: req.body.livre_id,
@@ -58,13 +58,13 @@ exports.create_chapitre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Chapitre.create(req_body)
+        Chapitres.create(req_body)
           .then((data) => {
             http.send(req, res, SUCCESS, data);
           })
           .catch((err) => {
             http.send(req, res, ERROR, {
-              message: err.message || 'Some error occurred while creating the Chapitre.',
+              message: err.message || 'Some error occurred while creating the Chapitres.',
             });
           });
       } else {
@@ -75,10 +75,10 @@ exports.create_chapitre = (req, res) => {
       console.log(err);
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
-  // Save Chapitre in database
+  // Save Chapitres in database
 };
 
-// Find a single Chapitre with an id
+// Find a single Chapitres with an id
 exports.findById = (req, res) => {
   const req_body = {
     id: req.query.id,
@@ -88,7 +88,7 @@ exports.findById = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Chapitre.findByPk(req_body.id)
+        Chapitres.findByPk(req_body.id)
           .then((chapitre) => {
             http.send(req, res, SUCCESS, chapitre);
           })
@@ -106,7 +106,7 @@ exports.findById = (req, res) => {
     });
 };
 
-// Update a Chapitre by the id in the request
+// Update a Chapitres by the id in the request
 exports.update_chapitre = (req, res) => {
   const req_body = {
     id: req.body.id,
@@ -117,21 +117,21 @@ exports.update_chapitre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Chapitre.update(req_body, { where: { id: req_body.id } })
+        Chapitres.update(req_body, { where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {
-                message: 'Chapitre was updated successfully.',
+                message: 'Chapitres was updated successfully.',
               });
             } else {
               http.send(req, res, ERROR, {
-                message: `Cannot update Chapitre with id=${req_body.id}. Maybe Chapitre was not found or req.body is empty!`,
+                message: `Cannot update Chapitres with id=${req_body.id}. Maybe Chapitres was not found or req.body is empty!`,
               });
             }
           })
           .catch((err) => {
             http.send(req, res, ERROR, {
-              message: `Error updating Chapitre with id=${req_body.id}`,
+              message: `Error updating Chapitres with id=${req_body.id}`,
             });
           });
       } else {
@@ -144,7 +144,7 @@ exports.update_chapitre = (req, res) => {
     });
 };
 
-// Delete a Chapitre with the specified id in the request
+// Delete a Chapitres with the specified id in the request
 exports.delete_chapitre = (req, res) => {
   const req_body = {
     id: req.query.id,
@@ -155,21 +155,21 @@ exports.delete_chapitre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Chapitre.destroy({ where: { id: req_body.id } })
+        Chapitres.destroy({ where: { id: req_body.id } })
           .then((num) => {
             if (num === 1) {
               http.send(req, res, SUCCESS, {
-                message: 'Chapitre was deleted successfully!',
+                message: 'Chapitres was deleted successfully!',
               });
             } else {
               http.send(req, res, ERROR, {
-                message: `Cannot delete Chapitre with id=${req_body.id}. Maybe Chapitre was not found or req.body is empty!`,
+                message: `Cannot delete Chapitres with id=${req_body.id}. Maybe Chapitres was not found or req.body is empty!`,
               });
             }
           })
           .catch((err) => {
             http.send(req, res, ERROR, {
-              sage: `Error deleting Chapitre with id=${req_body.id}`,
+              sage: `Error deleting Chapitres with id=${req_body.id}`,
             });
           });
       } else {

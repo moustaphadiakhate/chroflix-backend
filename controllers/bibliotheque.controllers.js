@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable node/no-unsupported-features/es-syntax */
 /* eslint-disable camelcase */
 const db = require('../models');
@@ -6,6 +7,7 @@ const validate = require('../common/common');
 const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../common/constant');
 
 const Bibliotheques = db.bibliotheques;
+const Livres = db.livres;
 
 exports.get_bibliotheques = (req, res) => {
   Bibliotheques.findAll()
@@ -54,10 +56,21 @@ exports.get_my_bibliotheque = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Bibliotheques.find({ where: { user_id: req_body.user_id } })
-          .then((bibliotheque) => {
+        Bibliotheques.findAll({ where: { user_id: req_body.user_id } })
+          .then(async (bibliotheques) => {
             // find all books titles
-            http.send(req, res, SUCCESS, bibliotheque);
+            const results = await Promise.all(
+              bibliotheques.map(async (bib) => {
+                const livre = await livre_finder(bib.livre_id);
+                return {
+                  id: bib.id,
+                  user_id: bib.user_id,
+                  livre,
+                  current_page: bib.current_page,
+                };
+              })
+            );
+            http.send(req, res, SUCCESS, results);
           })
           .catch((err) => {
             console.log(err);
@@ -204,3 +217,15 @@ exports.delete_bibliotheque = (req, res) => {
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
 };
+
+// private functions
+const livre_finder = (livre_id) =>
+  new Promise((resolve, reject) => {
+    Livres.findOne({ where: { id: livre_id } })
+      .then((livre) => {
+        resolve({ id: livre.id, titre: livre.titre });
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });

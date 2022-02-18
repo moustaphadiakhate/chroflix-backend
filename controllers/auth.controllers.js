@@ -13,6 +13,7 @@ const http = require('../common/http');
 const validate = require('../common/common');
 const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../common/constant');
 
+const def_avatar = 'https://chroflix.com/images/default_avatar.png';
 const User = db.users;
 
 exports.signup = (req, res) => {
@@ -41,6 +42,7 @@ exports.signup = (req, res) => {
                 email: req_body.email,
                 password: bcrypt.hashSync(req_body.password, 10),
                 profil: `user_${shortid.generate()}`,
+                avatar: def_avatar,
               })
                 .then(async (new_user) => {
                   const response_data = {

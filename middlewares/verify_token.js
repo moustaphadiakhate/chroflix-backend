@@ -4,8 +4,7 @@ const http = require('../common/http');
 const { TOKEN_ERROR } = require('../common/constant');
 
 module.exports = (req, res, next) => {
-  const token = req.body.token || req.query.token || req.headers.Authorization;
-
+  const token = req.body.token || req.query.token || req.headers.authorization;
   // decode token
   if (token) {
     // verifies secret and checks exp

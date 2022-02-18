@@ -15,25 +15,30 @@ const storage = multer.diskStorage({
   },
 });
 
+const thumbnail_prex = 'https://chroflix.com/storage';
 const upload = multer({ storage });
 
 const Livres = db.livres;
 const Chapitres = db.chapitres;
 
 exports.get_livres = (req, res) => {
-  Livres.findAll()
-    .then((livres) => {
-      const response_livres = livres.map(async (livre) => {
-        const chapitres = await chapitre_finders(livre.id);
-        return {
-          id: livre.id,
-          genre_id: livre.genre_id,
-          prix: livre.prix,
-          thumbnail: livre.thumbnail,
-          description: livre.description,
-          chapitres: chapitres || [],
-        };
-      });
+  const limit = 10;
+  const offset = 0 + ((req.query.page || 1) - 1) * limit;
+  Livres.findAll({ offset, limit })
+    .then(async (livres) => {
+      const response_livres = await Promise.all(
+        livres.map(async (livre) => {
+          const chapitres = await chapitres_finder(livre.id);
+          return {
+            id: livre.id,
+            genre_id: livre.genre_id,
+            prix: livre.prix,
+            thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
+            description: livre.description,
+            chapitres: chapitres || [],
+          };
+        })
+      );
       http.send(req, res, SUCCESS, response_livres);
     })
     .catch((err) => {
@@ -53,12 +58,12 @@ exports.get_livre = (req, res) => {
         Livres.findOne({ where: { id: req_body.id } })
           .then(async (livre) => {
             // find all chapiter titles
-            const chapitres = await chapitre_finders(livre.id);
+            const chapitres = await chapitres_finder(livre.id);
             const response_livre = {
               id: livre.id,
               genre_id: livre.genre_id,
               prix: livre.prix,
-              thumbnail: livre.thumbnail,
+              thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
               description: livre.description,
               chapitres: chapitres || [],
             };
@@ -66,7 +71,7 @@ exports.get_livre = (req, res) => {
           })
           .catch((err) => {
             console.log(err);
-            http.send(req, res, ERROR, err);
+            http.send(req, res, ERROR, { message: 'book not found in database' });
           });
       } else {
         http.send(req, res, VALIDATE_ERROR, response);
@@ -89,9 +94,18 @@ exports.get_my_livres = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Livres.find({ where: { auteur_id: req_body.auteur_id } })
-          .then((livres) => {
-            http.send(req, res, SUCCESS, livres);
+        Livres.findAll({ where: { auteur_id: req_body.auteur_id } })
+          .then(async (livres) => {
+            const response_livres = await Promise.all(
+              livres.map(async (livre) => ({
+                id: livre.id,
+                genre_id: livre.genre_id,
+                prix: livre.prix,
+                thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
+                description: livre.description,
+              }))
+            );
+            http.send(req, res, SUCCESS, response_livres);
           })
           .catch((err) => {
             console.log(err);
@@ -109,16 +123,17 @@ exports.get_my_livres = (req, res) => {
 
 // Create and Save a new Book
 exports.create_livre = (req, res) => {
+  // upload a photo
   const req_body = {
     auteur_id: req.body.auteur_id,
     genre_id: req.body.genre_id,
     titre: req.body.titre,
-    slug: req.body.slug,
-    thumbnail: req.body.thumbnail,
+    slug: req.body.titre.replace(/ /g, '-').replace(/'/g, '_'),
+    thumbnail: req.body.thumbnail, // posted image
     description: req.body.description,
     prix: req.body.prix,
-    banaliser: req.body.banaliser,
-    age: req.body.age,
+    banaliser: 0,
+    age: 0,
   };
   validate
     .validation(Object.keys(req_body), req_body)
@@ -242,11 +257,18 @@ exports.delete_livre = (req, res) => {
 };
 
 // private functions
-const chapitre_finders = (livre_id) =>
+const chapitres_finder = (livre_id) =>
   new Promise((resolve, reject) => {
     Chapitres.findAll({ where: { livre_id } })
-      .then((chapitres) => {
-        resolve(chapitres);
+      .then(async (chapitres) => {
+        const results = await Promise.all(
+          chapitres.map(async (chapitre) => ({
+            id: chapitre.id,
+            livre_id: chapitre.livre_id,
+            titre: chapitre.titre,
+          }))
+        );
+        resolve(results);
       })
       .catch((err) => {
         reject(err);

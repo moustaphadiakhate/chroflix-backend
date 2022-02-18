@@ -14,11 +14,13 @@ const notification_controller = require('../controllers/notification.controllers
 router.get('/all', user_controller.get_users);
 router.get('/user', user_controller.get_user);
 
-router.get('/my_bibliotheque', bibliotheque_controller.get_my_bibliotheque); // should contains all books titles
+router.get('/my_bibliotheque', bibliotheque_controller.get_my_bibliotheque);
 router.get('/my_notifications', notification_controller.get_my_notifications);
 router.get('/my_livres', livre_controller.get_my_livres);
-router.get('/my_livre', livre_controller.get_livre); // should contains all chapitres titles
 
+router.get('/livres', livre_controller.get_livres);
+
+router.get('/livre', livre_controller.get_livre);
 router.post('/livre', livre_controller.create_livre);
 router.patch('/livre', livre_controller.update_livre);
 router.delete('/livre', livre_controller.delete_livre);

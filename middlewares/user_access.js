@@ -14,7 +14,7 @@ exports.can_access_book = (req, res, next) => {
 exports.can_get_chapiter_or_brouillon = (req, res, next) => {
   Livres.findOne({ where: { id: req.query.livre_id } })
     .then((livre) => {
-      if (livre.prix !== '0') {
+      if (livre.prix > 1) {
         Transactions.findOne({
           where: { user_id: req.chroflix_user.user_id, livre_id: req.chroflix_user.livre_id },
         })
