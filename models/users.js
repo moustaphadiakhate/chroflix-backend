@@ -25,6 +25,7 @@ module.exports = function (sequelize, DataTypes) {
       pseudo: {
         type: DataTypes.STRING(255),
         allowNull: false,
+        unique: 'users_pseudo_unique',
       },
       avatar: {
         type: DataTypes.STRING(255),
@@ -68,6 +69,12 @@ module.exports = function (sequelize, DataTypes) {
           unique: true,
           using: 'BTREE',
           fields: [{ name: 'email' }],
+        },
+        {
+          name: 'users_pseudo_unique',
+          unique: true,
+          using: 'BTREE',
+          fields: [{ name: 'pseudo' }],
         },
       ],
     }

@@ -14,6 +14,7 @@ module.exports = {
   INTERNAL_SERVER_ERROR: 'InternalServerError',
 
   EMAIL_PRESENT: 'emailPresent',
+  PSEUDO_PRESENT: 'pseudoPresent',
   PHONE_PRESENT: 'phonePresent',
   LOG_IN: 'signedin',
   LOG_OUT: 'signedout',

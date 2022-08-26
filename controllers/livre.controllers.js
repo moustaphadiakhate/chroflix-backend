@@ -20,6 +20,9 @@ const upload = multer({ storage });
 
 const Livres = db.livres;
 const Chapitres = db.chapitres;
+const Auteurs = db.auteurs;
+const Users = db.users;
+
 
 exports.get_livres = (req, res) => {
   const limit = 10;
@@ -30,6 +33,7 @@ exports.get_livres = (req, res) => {
         livres.map(async (livre) => {
           const chapitres = await chapitres_finder(livre.id);
           return {
+            auteur_id: livre.auteur_id,
             id: livre.id,
             genre_id: livre.genre_id,
             prix: livre.prix,
@@ -55,17 +59,18 @@ exports.get_livre = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Livres.findOne({ where: { id: req_body.id } })
+        Livres.findOne({ where: { id: req_body.id }})
           .then(async (livre) => {
             // find all chapiter titles
-            const chapitres = await chapitres_finder(livre.id);
-            const response_livre = {
+             const chapitres = await chapitres_finder(livre.id);
+             const response_livre = {
+              auteur: livre.auteur_id,
               id: livre.id,
               genre_id: livre.genre_id,
               prix: livre.prix,
               thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
               description: livre.description,
-              chapitres: chapitres || [],
+              chapitres: chapitres || [],  
             };
             http.send(req, res, SUCCESS, response_livre);
           })
@@ -163,6 +168,7 @@ exports.create_livre = (req, res) => {
 exports.findById = (req, res) => {
   const req_body = {
     id: req.query.id,
+    auteur_id: req.query.auteur_id,
   };
   validate
     .validation(Object.keys(req_body), req_body)
