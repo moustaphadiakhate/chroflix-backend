@@ -23,7 +23,7 @@ Select the folder and run the below commands
 ```
 
 Method : POST
-URL : http://localhost:3000/health
+URL : http://localhost:3000
 Request : {
 
 }
