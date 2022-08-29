@@ -11,6 +11,7 @@ module.exports = {
     DB_PASS: process.env.DB_PASS,
     DB_NAME: process.env.DB_NAME,
     dialect: 'mysql',
+    port: 25060,
 
     // pool is optional, it will be used for Sequelize connection pool configuration
     pool: {
