@@ -13,7 +13,7 @@ const app = express();
 
 
 const corsOptions = {
-  origin: 'http://localhost:8081',
+  origin: '*',
 };
 
 app.use(morgan('tiny'));
@@ -41,7 +41,7 @@ app.use((req, res, next) => {
 app.use('/public', express.static('public'));
 
 // simple route
-app.get('/health', (req, res) => {
+app.get('/', (req, res) => {
   res.json({ status: 200, result: 'Chroflix api server.. nothing to see here' });
 });
 
