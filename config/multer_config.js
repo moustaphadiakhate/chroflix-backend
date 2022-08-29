@@ -19,4 +19,19 @@ const storage = multer.diskStorage({
 
 
 
-module.exports = multer({storage: storage}).single('image');
+ module.exports = multer({storage: storage}).single('image');
+
+
+// const upload = multer({  
+//   fileFilter: (req, file, cb) => {  
+//     if (file.mimetype === 'image/png') {  
+//       cb(null, true);  
+//     }  
+//     else {  
+//       cb(new error);  
+//     }  
+//   },  
+//   dest: './uploads/avatar'  
+// }) 
+
+// module.exports = upload.single('image');

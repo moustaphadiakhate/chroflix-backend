@@ -51,12 +51,16 @@ exports.get_user = (req, res) => {
 
 exports.uploads =(req,res)=>{
 
-  if ((req.file.mimetype === 'image/png')||(req.file.mimetype === 'image/jpeg')) {
-    
-    const req_body = {
-      id: req.body.id ,
-     avatar :`${req.protocol}://${req.get('host')}/uploads//${req.file.filename}`
-    };
+  const req_body = {
+    id: req.body.id ,
+   avatar :`${req.protocol}://${req.get('host')}/uploads//${req.file.filename}`
+  };
+
+  
+  if ( req.file.mimetype !== 'image/png') {  
+    res.send('file not uploaded since it\'s not a PNG');  
+  }  
+  else {  
     validate
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
@@ -78,11 +82,5 @@ exports.uploads =(req,res)=>{
       console.log(err);
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
-
-
-   } else {
-     res.send('error');
-   }
-  
-
+   } ;
 };
