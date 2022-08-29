@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
 const express = require('express');
+const multer = require('../config/multer_config');
+
 
 const router = express.Router();
 const user_controller = require('../controllers/user.controllers');
@@ -10,6 +12,8 @@ const chapitre_controller = require('../controllers/chapitre.controllers');
 const livre_controller = require('../controllers/livre.controllers');
 const bibliotheque_controller = require('../controllers/bibliotheque.controllers');
 const notification_controller = require('../controllers/notification.controllers');
+const upload = multer;
+
 
 router.get('/all', user_controller.get_users);
 router.get('/user', user_controller.get_user);
@@ -24,6 +28,10 @@ router.get('/livre', livre_controller.get_livre);
 router.post('/livre', livre_controller.create_livre);
 router.patch('/livre', livre_controller.update_livre);
 router.delete('/livre', livre_controller.delete_livre);
+router.post('/uploads',upload, user_controller.uploads);
+
+
+
 
 router.get(
   '/chapitre',

@@ -82,6 +82,7 @@ exports.create_auteur = (req, res) => {
 exports.findById = (req, res) => {
   const req_body = {
     id: req.query.id,
+    // user_id: req.query.user_id,
   };
   validate
     .validation(Object.keys(req_body), req_body)
