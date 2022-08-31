@@ -6,10 +6,12 @@ const validate = require('../common/common');
 const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../common/constant');
 
 const Auteurs = db.auteurs;
+const Livres = db.livres;
 
 exports.get_auteurs = (req, res) => {
   Auteurs.findAll()
-    .then((auteurs) => {
+    .then(async(auteurs) => {
+     
       http.send(req, res, SUCCESS, auteurs);
     })
     .catch((err) => {
@@ -17,7 +19,7 @@ exports.get_auteurs = (req, res) => {
       http.send(req, res, ERROR, err);
     });
 };
-
+ 
 exports.get_auteur = (req, res) => {
   const req_body = {
     id: req.query.id,
@@ -27,8 +29,21 @@ exports.get_auteur = (req, res) => {
     .then(async ({ status, response }) => {
       if (status) {
         Auteurs.findOne({ where: { id: req_body.id } })
-          .then((auteur) => {
-            http.send(req, res, SUCCESS, auteur);
+          .then(async(auteur) => {
+            const publication = await Livres.count({where : {auteur_id : auteur.id}});
+            const res_publication =
+            {
+              id : auteur.id,
+              user_id : auteur.user_id,
+              pseudo : auteur.pseudo,
+              approuver : auteur.approuver,
+              certifier : auteur.certifier,
+              banaliser : auteur.banaliser,
+              createdAt : auteur.createdAt,
+              updatedAt : auteur.updatedAt,
+              nombre_de_publication : publication
+            };
+            http.send(req, res, SUCCESS,res_publication)
           })
           .catch((err) => {
             console.log(err);
