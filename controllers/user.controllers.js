@@ -53,7 +53,8 @@ exports.uploads =(req,res)=>{
 
   const req_body = {
     id: req.body.id ,
-   avatar :`${req.protocol}://${req.get('host')}/uploads//${req.file.filename}`
+    avatar :`${req.file.filename}`
+  
   };
 
   
@@ -67,7 +68,8 @@ exports.uploads =(req,res)=>{
       if (status) {
         User.findOne({ where: { id: req_body.id } })
           .then((user) => {
-            user.avatar = req_body.avatar;
+            const pseudo = user.pseudo;
+            user.avatar = pseudo+'.'+req_body.avatar;
             http.send(req, res, SUCCESS, user);
           })
           .catch((err) => {

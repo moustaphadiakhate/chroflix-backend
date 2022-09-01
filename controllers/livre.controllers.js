@@ -22,6 +22,7 @@ const Livres = db.livres;
 const Chapitres = db.chapitres;
 const Auteurs = db.auteurs;
 const Users = db.users;
+const Genre = db.genres;
 
 
 exports.get_livres = (req, res) => {
@@ -32,14 +33,22 @@ exports.get_livres = (req, res) => {
       const response_livres = await Promise.all(
         livres.map(async (livre) => {
           const chapitres = await chapitres_finder(livre.id);
+          const auteur =  await Auteurs.findOne({ where: { id: livre.auteur_id }});
+          const user =  await Users.findOne({ where: { id: auteur.user_id }});
+          const genre =  await Genre.findOne({ where: { id: livre.genre_id }});
           return {
-            auteur_id: livre.auteur_id,
-            id: livre.id,
-            genre_id: livre.genre_id,
-            prix: livre.prix,
-            thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
-            description: livre.description,
-            chapitres: chapitres || [],
+            auteur: livre.auteur_id,
+              pseudo_auteur :auteur.pseudo,
+              nom_auteur : user.nom,
+              prenom_auteur : user.prenom,
+              livre_id: livre.id,
+              titre: livre.titre,
+              genre_id: livre.genre_id,
+              genre: genre.genre,
+              prix: livre.prix,
+              thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
+              description: livre.description,
+              chapitres: chapitres || [], 
           };
         })
       );
@@ -63,10 +72,18 @@ exports.get_livre = (req, res) => {
           .then(async (livre) => {
             // find all chapiter titles
              const chapitres = await chapitres_finder(livre.id);
+             const auteur =  await Auteurs.findOne({ where: { id: livre.auteur_id }})
+             const user =  await Users.findOne({ where: { id: auteur.user_id }})
+             const genre =  await Genre.findOne({ where: { id: livre.genre_id }})
              const response_livre = {
               auteur: livre.auteur_id,
-              id: livre.id,
+              pseudo_auteur :auteur.pseudo,
+              nom_auteur : user.nom,
+              prenom_auteur : user.prenom,
+              livre_id: livre.id,
+              titre: livre.titre,
               genre_id: livre.genre_id,
+              genre: genre.genre,
               prix: livre.prix,
               thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
               description: livre.description,
@@ -103,7 +120,9 @@ exports.get_my_livres = (req, res) => {
           .then(async (livres) => {
             const response_livres = await Promise.all(
               livres.map(async (livre) => ({
+                auteur: livre.auteur_id,
                 id: livre.id,
+                titre: livre.titre,
                 genre_id: livre.genre_id,
                 prix: livre.prix,
                 thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
