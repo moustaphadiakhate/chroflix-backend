@@ -26,7 +26,7 @@ const Genre = db.genres;
 
 
 exports.get_livres = (req, res) => {
-  const limit = 10;
+  const limit = 2;
   const offset = 0 + ((req.query.page || 1) - 1) * limit;
   Livres.findAll({ offset, limit })
     .then(async (livres) => {
