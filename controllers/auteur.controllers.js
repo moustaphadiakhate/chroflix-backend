@@ -7,12 +7,34 @@ const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../co
 
 const Auteurs = db.auteurs;
 const Livres = db.livres;
+const Abonnements = db.abonnements;
 
 exports.get_auteurs = (req, res) => {
-  Auteurs.findAll()
+  const limit = 10;
+  const offset = 0 + ((req.query.page || 1) - 1) * limit;
+  Auteurs.findAll({ offset, limit })
     .then(async(auteurs) => {
-     
-      http.send(req, res, SUCCESS, auteurs);
+
+
+      const response_livres = await Promise.all(
+        auteurs.map(async (auteur) => {
+          const publication = await Livres.count({where : {auteur_id : auteur.id}});
+          const abonne = await Abonnements.count({where : {auteur_id : auteur.id}});
+          return { 
+            id : auteur.id,
+            user_id : auteur.user_id,
+            pseudo : auteur.pseudo,
+            approuver : auteur.approuver,
+            certifier : auteur.certifier,
+            banaliser : auteur.banaliser,
+            createdAt : auteur.createdAt,
+            updatedAt : auteur.updatedAt,
+            nombre_de_publication : publication,
+            nombre_abonne : abonne
+          };
+        })
+      );
+      http.send(req, res, SUCCESS, response_livres);
     })
     .catch((err) => {
       console.log(err);
@@ -31,6 +53,7 @@ exports.get_auteur = (req, res) => {
         Auteurs.findOne({ where: { id: req_body.id } })
           .then(async(auteur) => {
             const publication = await Livres.count({where : {auteur_id : auteur.id}});
+            const abonne = await Abonnements.count({where : {auteur_id : auteur.id}});
             const res_publication =
             {
               id : auteur.id,
@@ -41,7 +64,8 @@ exports.get_auteur = (req, res) => {
               banaliser : auteur.banaliser,
               createdAt : auteur.createdAt,
               updatedAt : auteur.updatedAt,
-              nombre_de_publication : publication
+              nombre_de_publication : publication,
+              nombre_abonne : abonne
             };
             http.send(req, res, SUCCESS,res_publication)
           })

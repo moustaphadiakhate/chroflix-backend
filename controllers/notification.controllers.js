@@ -7,7 +7,9 @@ const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../co
 
 const Notifications = db.notifications;
 
-exports.get_notification = (req, res) => {
+ exports.get_notification = (req, res) => {
+//   const limit = 2;
+//   const offset = 0 + ((req.query.page || 1) - 1) * limit;
   const req_body = {
     id: req.query.id,
   };

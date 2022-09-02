@@ -12,7 +12,9 @@ const upload = multer;
 
 
 exports.get_users = (req, res) => {
-  User.findAll()
+  const limit = 10;
+  const offset = 0 + ((req.query.page || 1) - 1) * limit;
+  User.findAll({ offset, limit })
     .then((users) => {
       http.send(req, res, SUCCESS, users);
     })
