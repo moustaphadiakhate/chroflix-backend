@@ -8,7 +8,9 @@ const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../co
 const Chapitres = db.chapitres;
 
 exports.get_chapitres = (req, res) => {
-  Chapitres.findAll()
+  const limit = 10;
+  const offset = 0 + ((req.query.page || 1) - 1) * limit;
+  Chapitres.findAll({ offset, limit })
     .then((chapitre) => {
       http.send(req, res, SUCCESS, chapitre);
     })

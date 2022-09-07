@@ -14,6 +14,7 @@ const menu_routes = require('./menu.routes');
 const notification_routes = require('./notification.routes');
 const transaction_routes = require('./transaction.routes');
 const livre_routes = require('./livre.routes');
+// const nombre_vues_routes = require('./nombre_vue.routes');
 
 router.use('/auth', auth_routes);
 router.use('/users', user_routes);
@@ -28,6 +29,7 @@ router.use('/menu', menu_routes);
 router.use('/notification', notification_routes);
 router.use('/transaction', transaction_routes);
 router.use('/livre', livre_routes);
+// router.use('nombre_vue',nombre_vues_routes);
 
 
 module.exports = router;

@@ -8,7 +8,9 @@ const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../co
 const Genres = db.genres;
 
 exports.get_genres = (req, res) => {
-  Genres.findAll()
+  const limit = 10;
+  const offset = 0 + ((req.query.page || 1) - 1) * limit;
+  Genres.findAll({ offset, limit })
     .then((genres) => {
       http.send(req, res, SUCCESS, genres);
     })

@@ -8,7 +8,9 @@ const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../co
 const Dernierelectures = db.dernierelectures;
 
 exports.get_dernierelectures = (req, res) => {
-  Dernierelectures.findAll()
+  const limit = 10;
+  const offset = 0 + ((req.query.page || 1) - 1) * limit;
+  Dernierelectures.findAll({ offset, limit })
     .then((dernierelectures) => {
       http.send(req, res, SUCCESS, dernierelectures);
     })
