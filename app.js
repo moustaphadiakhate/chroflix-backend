@@ -42,7 +42,7 @@ app.use('/public', express.static('public'));
 
 // simple route
 app.get('/', (req, res) => {
-  res.json({ status: 200, result: 'Chroflix api server.. nothing to see here' });
+  res.json({ status: 200, result: 'Chroflix api server.. nothing to see here 07/09/2022' });
 });
 
 // api routes
