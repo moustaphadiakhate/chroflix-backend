@@ -22,11 +22,12 @@ const Livres = db.livres;
 const Chapitres = db.chapitres;
 const Auteurs = db.auteurs;
 const Users = db.users;
-const Genre = db.genres;
-
-
+const Genres = db.genres;
+const Nombre_vues = db.nombre_vues;
+const Votes = db.votes;
+const Transactions = db.transactions;
 exports.get_livres = (req, res) => {
-  const limit = 2;
+  const limit = 10;
   const offset = 0 + ((req.query.page || 1) - 1) * limit;
   Livres.findAll({ offset, limit })
     .then(async (livres) => {
@@ -35,7 +36,11 @@ exports.get_livres = (req, res) => {
           const chapitres = await chapitres_finder(livre.id);
           const auteur =  await Auteurs.findOne({ where: { id: livre.auteur_id }});
           const user =  await Users.findOne({ where: { id: auteur.user_id }});
-          const genre =  await Genre.findOne({ where: { id: livre.genre_id }});
+          const genre =  await Genres.findOne({ where: { id: livre.genre_id }});
+          const like =  await Votes.count({ where: { livre_id: livre.id }});
+          const nombre_ventes = await Transactions.count({where : {livre_id : livre.id }})
+         
+         
           return {
             auteur: livre.auteur_id,
               pseudo_auteur :auteur.pseudo,
@@ -48,7 +53,11 @@ exports.get_livres = (req, res) => {
               prix: livre.prix,
               thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
               description: livre.description,
-              chapitres: chapitres || [], 
+              like : like,
+              nombre_ventes : nombre_ventes ,
+              chapitres: chapitres || [],
+              // nombre_de_vue : nombre_vue, 
+              
           };
         })
       );
@@ -72,9 +81,12 @@ exports.get_livre = (req, res) => {
           .then(async (livre) => {
             // find all chapiter titles
              const chapitres = await chapitres_finder(livre.id);
-             const auteur =  await Auteurs.findOne({ where: { id: livre.auteur_id }})
-             const user =  await Users.findOne({ where: { id: auteur.user_id }})
-             const genre =  await Genre.findOne({ where: { id: livre.genre_id }})
+             const auteur =  await Auteurs.findOne({ where: { id: livre.auteur_id }});
+             const user =  await Users.findOne({ where: { id: auteur.user_id }});
+             const genre =  await Genres.findOne({ where: { id: livre.genre_id }});
+             const like =  await Votes.count({ where: { livre_id: livre.id }});
+             const nombre_ventes = await Transactions.count({where : {livre_id : livre.id }});
+            //  const nombre_vue =  await Nombre_vues.findOrCreate({ where: { livre_id: livre.id }});
              const response_livre = {
               auteur: livre.auteur_id,
               pseudo_auteur :auteur.pseudo,
@@ -87,6 +99,9 @@ exports.get_livre = (req, res) => {
               prix: livre.prix,
               thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
               description: livre.description,
+              // nombre_de_vue : nombre_vue,
+              like : like,
+              nombre_ventes : nombre_ventes ,
               chapitres: chapitres || [],  
             };
             http.send(req, res, SUCCESS, response_livre);
@@ -119,15 +134,34 @@ exports.get_my_livres = (req, res) => {
         Livres.findAll({ where: { auteur_id: req_body.auteur_id } })
           .then(async (livres) => {
             const response_livres = await Promise.all(
-              livres.map(async (livre) => ({
-                auteur: livre.auteur_id,
-                id: livre.id,
-                titre: livre.titre,
-                genre_id: livre.genre_id,
-                prix: livre.prix,
-                thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
-                description: livre.description,
-              }))
+              livres.map(async (livre) => {
+                // const chapitres = await chapitres_finder(livre.id);
+                const auteur =  await Auteurs.findOne({ where: { id: livre.auteur_id }});
+                const user =  await Users.findOne({ where: { id: auteur.user_id }});
+                const genre =  await Genres.findOne({ where: { id: livre.genre_id }});
+                const like =  await Votes.count({ where: { livre_id: livre.id }});
+                const nombre_ventes = await Transactions.count({where : {livre_id : livre.id }});
+               
+               
+                return {
+                  auteur: livre.auteur_id,
+                    pseudo_auteur :auteur.pseudo,
+                    nom_auteur : user.nom,
+                    prenom_auteur : user.prenom,
+                    livre_id: livre.id,
+                    titre: livre.titre,
+                    genre_id: livre.genre_id,
+                    genre: genre.genre,
+                    prix: livre.prix,
+                    thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
+                    description: livre.description,
+                    like : like,
+                    nombre_ventes : nombre_ventes , 
+                    // chapitres: chapitres || [],
+                    // nombre_de_vue : nombre_vue, 
+                    
+                };
+              })
             );
             http.send(req, res, SUCCESS, response_livres);
           })

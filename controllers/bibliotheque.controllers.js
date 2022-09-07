@@ -10,7 +10,9 @@ const Bibliotheques = db.bibliotheques;
 const Livres = db.livres;
 
 exports.get_bibliotheques = (req, res) => {
-  Bibliotheques.findAll()
+  const limit = 10;
+  const offset = 0 + ((req.query.page || 1) - 1) * limit;
+  Bibliotheques.findAll({offset,limit})
     .then((bibliotheques) => {
       http.send(req, res, SUCCESS, bibliotheques);
     })
@@ -91,7 +93,7 @@ exports.create_bibliotheque = (req, res) => {
   const req_body = {
     livre_id: req.body.livre_id,
     user_id: req.body.user_id,
-    current_page: req.body.current_page,
+     current_page: req.body.current_page,
   };
   validate
     .validation(Object.keys(req_body), req_body)

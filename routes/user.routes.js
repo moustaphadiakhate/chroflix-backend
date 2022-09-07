@@ -12,6 +12,7 @@ const chapitre_controller = require('../controllers/chapitre.controllers');
 const livre_controller = require('../controllers/livre.controllers');
 const bibliotheque_controller = require('../controllers/bibliotheque.controllers');
 const notification_controller = require('../controllers/notification.controllers');
+const abonnement_controller = require('../controllers/abonnement.controllers');
 const upload = multer;
 
 
@@ -29,6 +30,9 @@ router.post('/livre', livre_controller.create_livre);
 router.patch('/livre', livre_controller.update_livre);
 router.delete('/livre', livre_controller.delete_livre);
 router.post('/uploads',upload, user_controller.uploads);
+
+router.post('/abonnement',abonnement_controller.create_abonnement );
+router.delete('/desabonnement',abonnement_controller.delete_abonnement );
 
 
 
