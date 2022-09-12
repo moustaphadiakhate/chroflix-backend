@@ -31,11 +31,12 @@ exports.signup = (req, res) => {
     .then(async ({ status, response }) => {
       if (status) {
      User.findOne({ where: { email: req_body.email} })
-          .then((user) => {
+          .then(async(user) => {
+            const pseudo_verification= await User.findOne({ where: { pseudo: req_body.pseudo} });
             if (user) {
                 http.send(req, res, ERROR, { message: 'email already used ' });
             }
-            else if ( User.findOne({ where: { pseudo: req_body.pseudo} })) {
+            else if ( pseudo_verification ) {
               http.send(req, res, ERROR, { message: 'pseudo already used ' });
           }
             else {
