@@ -53,25 +53,29 @@ exports.get_user = (req, res) => {
 
 exports.uploads =(req,res)=>{
 
+  const MIME_TYPES = {
+    'image/jpg': 'jpg',
+    'image/jpeg': 'jpg',
+    'image/png': 'png'
+  };
   const req_body = {
     id: req.body.id ,
-    avatar :`${req.file.filename}`
+     avatar :`${req.protocol}://${req.get('host')}/uploads/avatar/`
   
   };
 
   
-  if ( req.file.mimetype !== 'image/png') {  
-    res.send('file not uploaded since it\'s not a PNG');  
-  }  
-  else {  
+  if ( (req.file.mimetype  in  MIME_TYPES ) ) {  
+
     validate
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
         User.findOne({ where: { id: req_body.id } })
-          .then((user) => {
+          .then(async(user) => {
             const pseudo = user.pseudo;
-            user.avatar = pseudo+'.'+req_body.avatar;
+             user.avatar = req_body.avatar+pseudo+'.'+ req.file.filename;
+               await user.save();
             http.send(req, res, SUCCESS, user);
           })
           .catch((err) => {
@@ -85,6 +89,9 @@ exports.uploads =(req,res)=>{
     .catch((err) => {
       console.log(err);
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
-    });
+    });  
+  }  
+  else {  
+    res.send('file not uploaded since it\'s not a PNG or JPEG');  
    } ;
 };
