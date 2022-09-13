@@ -8,6 +8,8 @@ const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../co
 
 const Bibliotheques = db.bibliotheques;
 const Livres = db.livres;
+const Users = db.users;
+const Genres = db.genres;
 
 exports.get_bibliotheques = (req, res) => {
   const limit = 10;
@@ -64,10 +66,17 @@ exports.get_my_bibliotheque = (req, res) => {
             const results = await Promise.all(
               bibliotheques.map(async (bib) => {
                 const livre = await livre_finder(bib.livre_id);
+                const user = await Users.findOne({where : {id:req_body.user_id}});
+                const genre = await Genres.findOne({where :{ id: livre.genre_id}})
                 return {
                   id: bib.id,
                   user_id: bib.user_id,
-                  livre,
+                  livre:{
+                    id : livre.id,
+                    titre: livre.titre,
+                    auteur : user.nom,
+                    genre : genre.genre,
+                  },
                   current_page: bib.current_page,
                 };
               })
@@ -225,7 +234,7 @@ const livre_finder = (livre_id) =>
   new Promise((resolve, reject) => {
     Livres.findOne({ where: { id: livre_id } })
       .then((livre) => {
-        resolve({ id: livre.id, titre: livre.titre });
+        resolve({ id: livre.id, titre: livre.titre ,genre_id:livre.genre_id});
       })
       .catch((err) => {
         reject(err);

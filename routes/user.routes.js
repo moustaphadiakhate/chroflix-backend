@@ -13,6 +13,7 @@ const livre_controller = require('../controllers/livre.controllers');
 const bibliotheque_controller = require('../controllers/bibliotheque.controllers');
 const notification_controller = require('../controllers/notification.controllers');
 const abonnement_controller = require('../controllers/abonnement.controllers');
+const like_controller = require('../controllers/like.controllers');
 const upload = multer;
 
 
@@ -33,6 +34,9 @@ router.post('/uploads',upload, user_controller.uploads);
 
 router.post('/abonnement',abonnement_controller.create_abonnement );
 router.delete('/desabonnement',abonnement_controller.delete_abonnement );
+
+router.post('/like', like_controller.create_like);
+router.delete('/like', like_controller.delete_like);
 
 
 
