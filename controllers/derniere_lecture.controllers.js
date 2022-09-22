@@ -28,7 +28,7 @@ exports.get_dernierelecture = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Dernierelectures.findOne({ where: { id: req_body.user_id } })
+        Dernierelectures.findOne({ where: { user_id: req_body.user_id } })
           .then((dernierelecture) => {
             http.send(req, res, SUCCESS, dernierelecture);
           })

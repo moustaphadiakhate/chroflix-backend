@@ -26,6 +26,7 @@ const Genres = db.genres;
 const Nombre_vues = db.nombre_vues;
 const Votes = db.votes;
 const Transactions = db.transactions;
+
 exports.get_livres = (req, res) => {
   const limit = 10;
   const offset = 0 + ((req.query.page || 1) - 1) * limit;
@@ -39,7 +40,7 @@ exports.get_livres = (req, res) => {
           const genre =  await Genres.findOne({ where: { id: livre.genre_id }});
           const like =  await Votes.count({ where: { livre_id: livre.id }});
           const nombre_ventes = await Transactions.count({where : {livre_id : livre.id }})
-         
+          // const nombre_vue = await get_nombre_vue(livre.id)
          
           return {
             auteur: livre.auteur_id,
@@ -333,3 +334,9 @@ const chapitres_finder = (livre_id) =>
         reject(err);
       });
   });
+
+
+
+
+
+ 

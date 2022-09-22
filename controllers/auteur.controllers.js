@@ -120,14 +120,14 @@ exports.create_auteur = (req, res) => {
 // Find a single Auteur with an id
 exports.findById = (req, res) => {
   const req_body = {
-    id: req.query.id,
-    // user_id: req.query.user_id,
+      // id: req.query.id,
+    user_id: req.query.user_id,
   };
   validate
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Auteurs.findByPk(req_body.id)
+        Auteurs.findByPk(req_body.user_id)
           .then((auteur) => {
             http.send(req, res, SUCCESS, auteur);
           })
@@ -208,6 +208,48 @@ exports.delete_auteur = (req, res) => {
             http.send(req, res, ERROR, {
               sage: `Error deleting Auteur with id=${req_body.id}`,
             });
+          });
+      } else {
+        http.send(req, res, VALIDATE_ERROR, response);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      http.send(req, res, INTERNAL_SERVER_ERROR, err);
+    });
+};
+
+
+exports.get_auteur_user_id = (req, res) => {
+  const req_body = {
+    user_id: req.query.user_id,
+  };
+  validate
+    .validation(Object.keys(req_body), req_body)
+    .then(async ({ status, response }) => {
+      if (status) {
+        Auteurs.findOne({ where: { user_id: req_body.user_id } })
+          .then(async(auteur) => {
+            const publication = await Livres.count({where : {auteur_id : auteur.id}});
+            const abonne = await Abonnements.count({where : {auteur_id : auteur.id}});
+            const res_publication =
+            {
+              id : auteur.id,
+              user_id : auteur.user_id,
+              pseudo : auteur.pseudo,
+              approuver : auteur.approuver,
+              certifier : auteur.certifier,
+              banaliser : auteur.banaliser,
+              createdAt : auteur.createdAt,
+              updatedAt : auteur.updatedAt,
+              nombre_de_publication : publication,
+              nombre_abonne : abonne
+            };
+            http.send(req, res, SUCCESS,res_publication)
+          })
+          .catch((err) => {
+            console.log(err);
+            http.send(req, res, ERROR, err);
           });
       } else {
         http.send(req, res, VALIDATE_ERROR, response);

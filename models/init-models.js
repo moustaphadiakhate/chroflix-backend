@@ -27,7 +27,7 @@ const _transactions = require('./transactions');
 const _users = require('./users');
 const _votes = require('./votes');
 const _wishlists = require('./wishlists');
-const _nombre_vues = require('./nombre_vues');
+
 
 function initModels(sequelize) {
   const abonnements = _abonnements(sequelize, DataTypes);
@@ -58,7 +58,7 @@ function initModels(sequelize) {
   const users = _users(sequelize, DataTypes);
   const votes = _votes(sequelize, DataTypes);
   const wishlists = _wishlists(sequelize, DataTypes);
-  const nombre_vues = _nombre_vues(sequelize, DataTypes);
+  
 
   permissions.belongsToMany(roles, {
     as: 'role_id_roles',
@@ -122,7 +122,6 @@ function initModels(sequelize) {
     users,
     votes,
     wishlists,
-    nombre_vues
   };
 }
 module.exports = initModels;
