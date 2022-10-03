@@ -61,6 +61,7 @@ exports.signup = (req, res) => {
                       email: new_user.email,
                     }),
                   };
+                  console.log(response_data);
                   http.send(req, res, SUCCESS, response_data);
                 })
                 .catch((err) => {

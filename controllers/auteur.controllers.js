@@ -15,7 +15,6 @@ exports.get_auteurs = (req, res) => {
   Auteurs.findAll({ offset, limit })
     .then(async(auteurs) => {
 
-
       const response_livres = await Promise.all(
         auteurs.map(async (auteur) => {
           const publication = await Livres.count({where : {auteur_id : auteur.id}});
@@ -111,7 +110,6 @@ exports.create_auteur = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
   // Save Auteur in database
@@ -120,7 +118,7 @@ exports.create_auteur = (req, res) => {
 // Find a single Auteur with an id
 exports.findById = (req, res) => {
   const req_body = {
-      // id: req.query.id,
+    id: req.query.id,
     user_id: req.query.user_id,
   };
   validate
@@ -177,7 +175,6 @@ exports.update_auteur = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
 };
@@ -214,7 +211,6 @@ exports.delete_auteur = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
 };
@@ -248,7 +244,6 @@ exports.get_auteur_user_id = (req, res) => {
             http.send(req, res, SUCCESS,res_publication)
           })
           .catch((err) => {
-            console.log(err);
             http.send(req, res, ERROR, err);
           });
       } else {
@@ -256,7 +251,6 @@ exports.get_auteur_user_id = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
 };

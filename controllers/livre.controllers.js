@@ -1,29 +1,31 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable node/no-unsupported-features/es-syntax */
 /* eslint-disable camelcase */
-const multer = require('multer');
+// const multer = require('multer');
 const shortid = require('shortid');
 const db = require('../models');
 const http = require('../common/http');
 const validate = require('../common/common');
 const { SUCCESS, VALIDATE_ERROR, INTERNAL_SERVER_ERROR, ERROR } = require('../common/constant');
+const multer = require('../config/multerLivre_config');
 
-const storage = multer.diskStorage({
-  destination: './uploads/input',
-  filename(req, file, cb) {
-    cb(null, `${Date.now()}-${shortid.generate()}`);
-  },
-});
+
+// const storage = multer.diskStorage({
+//   destination: './uploads/input',
+//   filename(req, file, cb) {
+//     cb(null, `${Date.now()}-${shortid.generate()}`);
+//   },
+// });
+
 
 const thumbnail_prex = 'https://chroflix.com/storage';
-const upload = multer({ storage });
+const upload = multer;
 
 const Livres = db.livres;
 const Chapitres = db.chapitres;
 const Auteurs = db.auteurs;
 const Users = db.users;
 const Genres = db.genres;
-const Nombre_vues = db.nombre_vues;
 const Votes = db.votes;
 const Transactions = db.transactions;
 
@@ -52,12 +54,12 @@ exports.get_livres = (req, res) => {
               genre_id: livre.genre_id,
               genre: genre.genre,
               prix: livre.prix,
-              thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
+              // thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
+              thumbnail: livre.thumbnail,
               description: livre.description,
               like : like,
               nombre_ventes : nombre_ventes ,
               chapitres: chapitres || [],
-              // nombre_de_vue : nombre_vue, 
               
           };
         })
@@ -87,7 +89,7 @@ exports.get_livre = (req, res) => {
              const genre =  await Genres.findOne({ where: { id: livre.genre_id }});
              const like =  await Votes.count({ where: { livre_id: livre.id }});
              const nombre_ventes = await Transactions.count({where : {livre_id : livre.id }});
-            //  const nombre_vue =  await Nombre_vues.findOrCreate({ where: { livre_id: livre.id }});
+  
              const response_livre = {
               auteur: livre.auteur_id,
               pseudo_auteur :auteur.pseudo,
@@ -98,9 +100,9 @@ exports.get_livre = (req, res) => {
               genre_id: livre.genre_id,
               genre: genre.genre,
               prix: livre.prix,
-              thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
+              // thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
+              thumbnail: livre.thumbnail,
               description: livre.description,
-              // nombre_de_vue : nombre_vue,
               like : like,
               nombre_ventes : nombre_ventes ,
               chapitres: chapitres || [],  
@@ -142,8 +144,7 @@ exports.get_my_livres = (req, res) => {
                 const genre =  await Genres.findOne({ where: { id: livre.genre_id }});
                 const like =  await Votes.count({ where: { livre_id: livre.id }});
                 const nombre_ventes = await Transactions.count({where : {livre_id : livre.id }});
-               
-               
+
                 return {
                   auteur: livre.auteur_id,
                     pseudo_auteur :auteur.pseudo,
@@ -154,7 +155,7 @@ exports.get_my_livres = (req, res) => {
                     genre_id: livre.genre_id,
                     genre: genre.genre,
                     prix: livre.prix,
-                    thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
+                    thumbnail: livre.thumbnail,
                     description: livre.description,
                     like : like,
                     nombre_ventes : nombre_ventes , 
@@ -182,39 +183,53 @@ exports.get_my_livres = (req, res) => {
 
 // Create and Save a new Book
 exports.create_livre = (req, res) => {
-  // upload a photo
-  const req_body = {
-    auteur_id: req.body.auteur_id,
-    genre_id: req.body.genre_id,
-    titre: req.body.titre,
-    slug: req.body.titre.replace(/ /g, '-').replace(/'/g, '_'),
-    thumbnail: req.body.thumbnail, // posted image
-    description: req.body.description,
-    prix: req.body.prix,
-    banaliser: 0,
-    age: 0,
+  
+  const MIME_TYPES = {
+    'image/jpg': 'jpg',
+    'image/jpeg': 'jpeg',
+    'image/png': 'png'
   };
-  validate
-    .validation(Object.keys(req_body), req_body)
-    .then(async ({ status, response }) => {
-      if (status) {
-        Livres.create(req_body)
-          .then((data) => {
-            http.send(req, res, SUCCESS, data);
-          })
-          .catch((err) => {
-            http.send(req, res, ERROR, {
-              message: err.message || 'Some error occurred while creating the Book.',
+  
+  if ( (req.file.mimetype  in  MIME_TYPES ) ){
+    const req_body = {
+      auteur_id: req.body.auteur_id,
+      genre_id: req.body.genre_id,
+      titre: req.body.titre,
+      slug: req.body.titre.replace(/ /g, '-').replace(/'/g, '_'),
+      thumbnail: `${req.protocol}://${req.get('host')}/uploads/input/${req.file.filename}`, // posted image
+      description: req.body.description,
+      prix: req.body.prix,
+      banaliser: 0,
+      age: 0,
+    };
+    validate
+      .validation(Object.keys(req_body), req_body)
+      .then(async ({ status, response }) => {
+        if (status) {
+          Livres.create(req_body)
+            .then((data) => {
+              console.log(data);
+              http.send(req, res, SUCCESS, data);
+            })
+            .catch((err) => {
+              http.send(req, res, ERROR, {
+                message: err.message || 'Some error occurred while creating the Book.',
+              });
             });
-          });
-      } else {
-        http.send(req, res, VALIDATE_ERROR, response);
-      }
-    })
-    .catch((err) => {
-      console.log(err);
-      http.send(req, res, INTERNAL_SERVER_ERROR, err);
-    });
+        } else {
+          http.send(req, res, VALIDATE_ERROR, response);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        http.send(req, res, INTERNAL_SERVER_ERROR, err);
+      });
+  }
+  else {  
+    res.send('file not uploaded since it\'s not a PNG or JPEG');  
+   } ;
+  // upload a photo
+  
   // Save Book in database
 };
 
