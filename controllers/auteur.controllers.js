@@ -98,6 +98,7 @@ exports.create_auteur = (req, res) => {
       if (status) {
         Auteurs.create(req_body)
           .then((data) => {
+            data.save();
             http.send(req, res, SUCCESS, data);
           })
           .catch((err) => {
