@@ -61,17 +61,17 @@ exports.signup = (req, res) => {
                       email: new_user.email,
                     }),
                   };
-                  console.log(response_data);
+                //  new_user.save() ;
                   http.send(req, res, SUCCESS, response_data);
                 })
                 .catch((err) => {
-                  console.log(err);
+                  
                   http.send(req, res, ERROR, err);
                 });
             }
           })
           .catch((err) => {
-            console.log(err);
+            
             http.send(req, res, ERROR, err);
           });
       } else {

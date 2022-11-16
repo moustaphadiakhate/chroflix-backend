@@ -21,7 +21,7 @@ const multer = require('../config/multerLivre_config');
 const thumbnail_prex = 'https://chroflix.com/storage';
 const upload = multer;
 
-const Livres = db.livres;
+const Livres = db.livres
 const Chapitres = db.chapitres;
 const Auteurs = db.auteurs;
 const Users = db.users;
@@ -87,6 +87,7 @@ exports.get_livre = (req, res) => {
              const auteur =  await Auteurs.findOne({ where: { id: livre.auteur_id }});
              const user =  await Users.findOne({ where: { id: auteur.user_id }});
              const genre =  await Genres.findOne({ where: { id: livre.genre_id }});
+             console.log(genre);
              const like =  await Votes.count({ where: { livre_id: livre.id }});
              const nombre_ventes = await Transactions.count({where : {livre_id : livre.id }});
   
@@ -100,7 +101,7 @@ exports.get_livre = (req, res) => {
               genre_id: livre.genre_id,
               genre: genre.genre,
               prix: livre.prix,
-              // thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
+              thumbnail: livre.thumbnail.replace('public', thumbnail_prex),
               thumbnail: livre.thumbnail,
               description: livre.description,
               like : like,
@@ -118,7 +119,6 @@ exports.get_livre = (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
 };
@@ -208,7 +208,7 @@ exports.create_livre = (req, res) => {
         if (status) {
           Livres.create(req_body)
             .then((data) => {
-              console.log(data);
+              data.save();
               http.send(req, res, SUCCESS, data);
             })
             .catch((err) => {

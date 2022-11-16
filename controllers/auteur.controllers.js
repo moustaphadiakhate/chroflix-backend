@@ -96,24 +96,40 @@ exports.create_auteur = (req, res) => {
     .validation(Object.keys(req_body), req_body)
     .then(async ({ status, response }) => {
       if (status) {
-        Auteurs.create(req_body)
-          .then((data) => {
-            http.send(req, res, SUCCESS, data);
-          })
-          .catch((err) => {
-            http.send(req, res, ERROR, {
-              message: err.message || 'Some error occurred while creating the Auteur.',
+        
+        Auteurs.findOne({where : {pseudo: req_body.pseudo}})
+        .then((auteur)=>{
+          if (auteur)
+          {
+            http.send(req, res, ERROR, { message: 'Pseudo already used ' });
+          }
+          else{
+            Auteurs.create(req_body)
+            .then((data) => {
+              http.send(req, res, SUCCESS, data);
+            })
+            .catch((err) => {
+              http.send(req, res, ERROR, {
+                message: err.message || 'Some error occurred while creating the Auteur.',
+              });
             });
-          });
-      } else {
-        http.send(req, res, VALIDATE_ERROR, response);
-      }
-    })
-    .catch((err) => {
-      http.send(req, res, INTERNAL_SERVER_ERROR, err);
-    });
+          
+        } 
+      })
+    }
+      else {
+          http.send(req, res, VALIDATE_ERROR, response);
+        }
+      })
+      .catch((err) => {
+        http.send(req, res, INTERNAL_SERVER_ERROR, err);
+      });
+          };
+      
+
+       
   // Save Auteur in database
-};
+
 
 // Find a single Auteur with an id
 exports.findById = (req, res) => {

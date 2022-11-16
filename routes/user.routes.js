@@ -28,6 +28,7 @@ router.get('/livres', livre_controller.get_livres);
 
 router.get('/livre', livre_controller.get_livre);
 router.post('/livre', livre_controller.create_livre);
+router.post('/livre',upload, livre_controller.create_livre);
 router.patch('/livre', livre_controller.update_livre);
 router.delete('/livre', livre_controller.delete_livre);
 router.post('/uploads',upload, user_controller.uploads);

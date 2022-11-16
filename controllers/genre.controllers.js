@@ -45,3 +45,73 @@ exports.get_genre = (req, res) => {
       http.send(req, res, INTERNAL_SERVER_ERROR, err);
     });
 };
+
+
+
+exports.create_genre = (req, res) => {
+  const req_body = {
+    genre: req.body.genre,
+    slug: req.body.slug,
+    banaliser : req.body.banaliser,
+  };
+  validate
+    .validation(Object.keys(req_body), req_body)
+    .then(async ({ status, response }) => {
+      if (status) {
+        Genres.create(req_body)
+          .then((data) => {
+            http.send(req, res, SUCCESS, data);
+          })
+          .catch((err) => {
+            http.send(req, res, ERROR, {
+              message: err.message || 'Some error occurred while creating the Genre.',
+            });
+          });
+      } else {
+        http.send(req, res, VALIDATE_ERROR, response);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      http.send(req, res, INTERNAL_SERVER_ERROR, err);
+    });
+  // Save Genres in database
+};
+
+
+
+exports.delete_genre = (req, res) => {
+  const req_body = {
+    id: req.query.id,
+  };
+
+  validate
+    .validation(Object.keys(req_body), req_body)
+    .then(async ({ status, response }) => {
+      if (status) {
+        Genres.destroy({ where: { id: req_body.id } })
+          .then((num) => {
+            if (num === 1) {
+              http.send(req, res, SUCCESS, {
+                message: 'Genres was deleted successfully!',
+              });
+            } else {
+              http.send(req, res, ERROR, {
+                message: `Cannot delete Genres with id=${req_body.id}. Maybe Genres was not found or req.body is empty!`,
+              });
+            }
+          })
+          .catch((err) => {
+            http.send(req, res, ERROR, {
+              sage: `Error deleting Genres with id=${req_body.id}`,
+            });
+          });
+      } else {
+        http.send(req, res, VALIDATE_ERROR, response);
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      http.send(req, res, INTERNAL_SERVER_ERROR, err);
+    });
+};
